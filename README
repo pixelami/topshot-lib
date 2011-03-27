@@ -1,0 +1,43 @@
+Lightweight tool that add a simple screen grabber UI component to a Flex Application. 
+Originally designed to help with creating sreen grabs for reporting UI bugs.
+
+A simple Flex 4.1 usage Example
+
+<?xml version="1.0" encoding="utf-8"?>
+<s:Application 
+	xmlns:fx="http://ns.adobe.com/mxml/2009" 
+	xmlns:s="library://ns.adobe.com/flex/spark" 
+	xmlns:mx="library://ns.adobe.com/flex/mx" 
+	xmlns:tools="org.pixelami.topshot.tools.*"
+	minWidth="955" minHeight="600"
+	backgroundColor="#212121"
+	>
+	<fx:Declarations>
+		<tools:TopShotTool id="topShotTool" target="{this}"/>
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			[Embed(source="Outlaw.jpg")]
+			[Bindable]
+			public var BackgroundImage:Class;
+		]]>
+	</fx:Script>
+	<s:Group left="60" right="10" top="10" bottom="10">
+		<s:Rect left="0" right="0" top="0" bottom="0">
+			<s:fill>
+				<s:SolidColor color="#CCCCCC"/>
+			</s:fill>
+		</s:Rect>
+		<s:HGroup horizontalCenter="0" verticalCenter="0">
+			<mx:Image source="{BackgroundImage}" width="400" height="400"/>
+			
+			<mx:Image id="preview" width="400" height="400" source="{topShotTool.encodedImageBytes}" />
+		</s:HGroup>	
+	</s:Group>
+	<s:ToggleButton 
+		width="21" height="21" top="10" left="10"
+		toolTip="launch screen capper"
+		verticalCenter="0" horizontalCenter="0" 
+		click="topShotTool.toggle();"
+		/>
+</s:Application>
