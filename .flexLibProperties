@@ -6,6 +6,10 @@
     <classEntry path="org.pixelami.topshot.tools.TopShotTool"/>
     <classEntry path="org.pixelami.utils.LoaderInfoUtil"/>
   </includeClasses>
-  <includeResources/>
-  <namespaceManifests/>
+  <includeResources>
+    <resourceEntry destPath="defaults.css" sourcePath="defaults.css"/>
+  </includeResources>
+  <namespaceManifests>
+    <namespaceManifestEntry manifest="manifest.xml" namespace="http://pixelami.org/topshot/2011"/>
+  </namespaceManifests>
 </flexLibProperties>

@@ -1,0 +1,12 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+@namespace components "org.pixelami.topshot.components.*";
+
+
+components|CaptureAreaIndicator {
+	selecting-outline-color	: #991010;
+	preview-outline-color : #00CC66;
+	close-button-icon : ClassReference('org.pixelami.icons.CloseButtonGraphic');
+	download-button-icon : ClassReference('org.pixelami.icons.DownArrowGraphic');
+}

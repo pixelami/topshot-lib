@@ -37,7 +37,20 @@ A simple Flex 4.1 usage Example
 	<s:ToggleButton 
 		width="21" height="21" top="10" left="10"
 		toolTip="launch screen capper"
-		verticalCenter="0" horizontalCenter="0" 
 		click="topShotTool.toggle();"
 		/>
 </s:Application>
+
+To run example -
+1. Create a Flex Web Application Project.
+2. Replace [Embed(source="Outlaw.jpg")] with a URL to a local image.
+
+
+
+The default style CaptureAreaIndicator
+components|CaptureAreaIndicator {
+	selecting-outline-color	: #991010;
+	preview-outline-color : #00CC66;
+	close-button-icon : ClassReference('org.pixelami.icons.CloseButtonGraphic');
+	download-button-icon : ClassReference('org.pixelami.icons.DownArrowGraphic');
+}

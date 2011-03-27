@@ -15,7 +15,8 @@ package org.pixelami.utils
 	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.utils.getDefinitionByName;
-
+	
+	[ExcludeClass]
 	public class LoaderInfoUtil
 	{
 		

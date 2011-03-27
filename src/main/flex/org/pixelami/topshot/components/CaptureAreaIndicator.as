@@ -23,7 +23,12 @@ package org.pixelami.topshot.components
 	import org.pixelami.icons.CloseButtonGraphic;
 	import org.pixelami.icons.DownArrowGraphic;
 	
-	import spark.components.Button;
+	
+	
+	[Style(name="closeButtonIcon",type="Class")]
+	[Style(name="downloadButtonIcon",type="Class")]
+	[Style(name="selectingOutlineColor",type="uint",format="Color")]
+	[Style(name="previewOutlineColor",type="uint",format="Color")]
 	
 	[Event(name="close",type="flash.events.Event")]
 	[Event(name="download",type="flash.events.Event")]
@@ -40,7 +45,13 @@ package org.pixelami.topshot.components
 		
 		private var background:UIComponent;
 		
+		private var color:uint;
+		private var color2:uint;
 		
+		// HACK to compile default asset classes
+		private var defaultSkinClassHack:Array = [
+			CloseButtonGraphic, DownArrowGraphic
+		];
 		
 		public function get capturePoint():Point
 		{
@@ -100,14 +111,16 @@ package org.pixelami.topshot.components
 			
 			var buttonSize:uint = 16;
 			
-			closeButton = new IconGraphic()
-			closeButton.setStyle('iconClass',CloseButtonGraphic);
+			closeButton = new IconGraphic();
+			
+			closeButton.setStyle('iconClass',getStyle('closeButtonIcon'));
 			setButtonButtonTraits(closeButton);
 			closeButton.width = buttonSize;
 			closeButton.height = buttonSize;
 			
 			downloadButton = new IconGraphic();
-			downloadButton.setStyle('iconClass',DownArrowGraphic);
+			
+			downloadButton.setStyle('iconClass',getStyle('downloadButtonIcon'));
 			setButtonButtonTraits(downloadButton);
 			downloadButton.width = buttonSize;
 			downloadButton.height = buttonSize;
@@ -155,6 +168,21 @@ package org.pixelami.topshot.components
 			dispatchEvent(new Event('close'));
 		}
 		
+		override public function styleChanged(styleProp:String):void
+		{
+			if(styleProp == 'selectingOutlineColor' || styleProp == null)
+			{
+				color2 = getStyle('selectingOutlineColor');
+			}
+			
+			if(styleProp == 'previewOutlineColor' || styleProp == null)
+			{
+				color = getStyle('previewOutlineColor');
+			}
+			
+			super.styleChanged(styleProp);
+		}
+		
 		override protected function updateDisplayList(w:Number, h:Number):void
 		{
 			super.updateDisplayList(w,h);
@@ -165,7 +193,7 @@ package org.pixelami.topshot.components
 			background.setActualSize(unscaledWidth,unscaledHeight);
 			
 			var lineThickness:Number = 2;
-			var color:uint = buttonsShowing ? 0x00CC66 : 0x991010;
+			var color:uint = buttonsShowing ? color : color2;
 			var gap:Number = 3;
 			var padding:Number = 3;
 			

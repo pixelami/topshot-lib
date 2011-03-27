@@ -56,9 +56,11 @@ package org.pixelami.topshot.components
 		override protected function updateDisplayList(unscaledWidth:Number, unscaledHeight:Number):void
 		{
 			super.updateDisplayList(unscaledWidth,unscaledHeight);
-			
-			skinGraphic.width = unscaledWidth;
-			skinGraphic.height = unscaledHeight;
+			if(skinGraphic)
+			{
+				skinGraphic.width = unscaledWidth;
+				skinGraphic.height = unscaledHeight;
+			}
 		}
 		
 		override public function styleChanged(styleProp:String):void
