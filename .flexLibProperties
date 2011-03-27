@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="true" useMultiPlatformConfig="false" version="3">
+  <includeClasses>
+    <classEntry path="org.pixelami.topshot.components.CaptureAreaIndicator"/>
+    <classEntry path="org.pixelami.topshot.components.IconGraphic"/>
+    <classEntry path="org.pixelami.topshot.tools.TopShotTool"/>
+    <classEntry path="org.pixelami.utils.LoaderInfoUtil"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>
