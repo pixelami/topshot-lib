@@ -1,5 +1,5 @@
 Lightweight tool that add a simple screen grabber UI component to a Flex Application. 
-Originally designed to help with creating sreen grabs for reporting UI bugs.
+Originally designed to help with creating screen grabs for reporting UI bugs.
 
 A simple Flex 4.1 usage Example
 
@@ -41,16 +41,23 @@ A simple Flex 4.1 usage Example
 		/>
 </s:Application>
 
-To run example -
-1. Create a Flex Web Application Project.
-2. Replace [Embed(source="Outlaw.jpg")] with a URL to a local image.
+To run the above example replace [Embed(source="Outlaw.jpg")] with a URL to a local image.
 
 
+The default style for CaptureAreaIndicator
 
-The default style CaptureAreaIndicator
 components|CaptureAreaIndicator {
 	selecting-outline-color	: #991010;
 	preview-outline-color : #00CC66;
 	close-button-icon : ClassReference('org.pixelami.icons.CloseButtonGraphic');
 	download-button-icon : ClassReference('org.pixelami.icons.DownArrowGraphic');
 }
+
+
+This project depends on alchemy jpegencoder lib from http://segfaultlabs.com/devlogs/alchemy-asynchronous-jpeg-encoding-2
+I have included the swc in the libs folder of this project.
+This dependency brings the compiled swc up to 220kb
+
+ROADMAP
+remove dependency on jpegencoder_100092010.swc and include an asynchronous AS3 JPEG encoder.
+Allow user to configure which JPEG encoding lib to use (speed vs size)

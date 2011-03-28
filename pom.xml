@@ -20,7 +20,7 @@
 
   <groupId>org.pixelami</groupId>
   <artifactId>topshot-lib</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
   <packaging>swc</packaging>
 
   <name>Pixelami topshot-lib</name>
@@ -79,8 +79,40 @@
           </execution>
         </executions>
       </plugin>
-	  
 	  -->
+	  
+	  <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpack</id>
+            <phase>package</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                   <groupId>org.pixelami</groupId>
+  				   <artifactId>topshot-lib</artifactId>
+  				   <version>0.0.1-SNAPSHOT</version>
+                   <type>swc</type>
+                   <overWrite>false</overWrite>
+                   <outputDirectory>${project.build.directory}/library</outputDirectory>
+				   <destFileName>topshot.swf</destFileName>
+                 </artifactItem>
+               </artifactItems>
+               <outputDirectory>${project.build.directory}</outputDirectory>
+               <overWriteReleases>false</overWriteReleases>
+               <overWriteSnapshots>true</overWriteSnapshots>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+
+	  
 	  <plugin>
 	    <groupId>org.apache.maven.plugins</groupId>
 	    <artifactId>maven-deploy-plugin</artifactId>
