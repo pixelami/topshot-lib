@@ -31,6 +31,7 @@ package org.pixelami.topshot.tools
 	import mx.core.FlexGlobals;
 	import mx.core.UIComponent;
 	import mx.graphics.codec.JPEGEncoder;
+	import mx.managers.ToolTipManager;
 	
 	import org.pixelami.topshot.components.CaptureAreaIndicator;
 	import org.pixelami.utils.LoaderInfoUtil;
@@ -39,12 +40,20 @@ package org.pixelami.topshot.tools
 	
 	public class TopShotTool extends EventDispatcher
 	{
+		public static const DOWNLOAD:String = "download";
+		public static const ENCODE_COMPLETE:String = "encodeComplete";
+		
 		public var target:UIComponent;
+		
+		public var context:UIComponent;
+		
 		private var mouseDownPoint:Point;
-		private var captureAreaIndicatorContainer:CaptureAreaIndicator;
+		private var captureAreaIndicator:CaptureAreaIndicator;
 		private var isMouseDown:Boolean;
 		private var mousePoint:Point
 		private var captureArea:Rectangle;
+		
+		
 		
 		private var rawImageBytes:ByteArray;
 		
@@ -82,7 +91,7 @@ package org.pixelami.topshot.tools
 			}
 			else
 			{
-				if(captureAreaIndicatorContainer)
+				if(captureAreaIndicator)
 				{
 					removeCaptureAreaContainer();
 				}
@@ -138,17 +147,15 @@ package org.pixelami.topshot.tools
 			}
 		}
 		
-		
-		
 		private function onMouseUp(event:MouseEvent):void
 		{
 			isMouseDown = false;
 			
 			captureArea = normalizeSelectionRect(captureArea);
 			// update the captureAreaIndicatorContainer so that button will be drawn in correct position
-			captureAreaIndicatorContainer.capturePoint = new Point(captureArea.x,captureArea.y);
-			captureAreaIndicatorContainer.captureWidth = captureArea.width;
-			captureAreaIndicatorContainer.captureHeight = captureArea.height;
+			captureAreaIndicator.capturePoint = new Point(captureArea.x,captureArea.y);
+			captureAreaIndicator.captureWidth = captureArea.width;
+			captureAreaIndicator.captureHeight = captureArea.height;
 			
 			if(captureArea.width > minCapWidth && captureArea.height > minCapHeight)
 			{
@@ -159,44 +166,44 @@ package org.pixelami.topshot.tools
 				trace("WARNING: selected area is smaller than minCapWidth of "+minCapWidth+" or minCapHeight of "+minCapHeight);
 				removeCaptureAreaContainer();
 			}
-			
 		}
-		
-		
 		
 		protected function addCaptureAreaContainer():void
 		{
-			if(!captureAreaIndicatorContainer) 
+			if(!captureAreaIndicator) 
 			{
-				captureAreaIndicatorContainer = new CaptureAreaIndicator();
+				captureAreaIndicator = new CaptureAreaIndicator();
+				if(context) captureAreaIndicator.moduleFactory = context.moduleFactory;
 				if(target.hasOwnProperty("addElement"))
 				{
-					target["addElement"](captureAreaIndicatorContainer);
+					target["addElement"](captureAreaIndicator);
 				}
 				else
 				{
-					target.addChild(captureAreaIndicatorContainer);
+					target.addChild(captureAreaIndicator);
 				}
 				
-				captureAreaIndicatorContainer.width = getStage().stageWidth;
-				captureAreaIndicatorContainer.height = getStage().stageHeight;
-				captureAreaIndicatorContainer.capturePoint = mouseDownPoint;
+				captureAreaIndicator.width = getStage().stageWidth;
+				captureAreaIndicator.height = getStage().stageHeight;
+				captureAreaIndicator.capturePoint = mouseDownPoint;
 			}
 		}
 		
 		protected function removeCaptureAreaContainer():void
 		{
-			if(captureAreaIndicatorContainer) 
+			if(captureAreaIndicator) 
 			{
-				if(target.hasOwnProperty("addElement"))
+				captureAreaIndicator.removeEventListener(Event.CLOSE,onCaptureIndicatorCloseClick);
+				captureAreaIndicator.removeEventListener(DOWNLOAD,onDownloadImageClick);
+				if(target.hasOwnProperty("removeElement"))
 				{
-					target["removeElement"](captureAreaIndicatorContainer);
+					target["removeElement"](captureAreaIndicator);
 				}
 				else
 				{
-					target.removeChild(captureAreaIndicatorContainer);
+					target.removeChild(captureAreaIndicator);
 				}
-				captureAreaIndicatorContainer = null;
+				captureAreaIndicator = null;
 			}
 		}
 		
@@ -208,16 +215,16 @@ package org.pixelami.topshot.tools
 			captureArea.width = mousePoint.x - mouseDownPoint.x;
 			captureArea.height = mousePoint.y - mouseDownPoint.y;
 			
-			captureAreaIndicatorContainer.captureWidth = captureArea.width;
-			captureAreaIndicatorContainer.captureHeight = captureArea.height;
+			captureAreaIndicator.captureWidth = captureArea.width;
+			captureAreaIndicator.captureHeight = captureArea.height;
 		}
 		
 		protected function doCapture():void
 		{
 			var stageBmd:BitmapData = new BitmapData(getStage().stageWidth,getStage().stageHeight);
-			captureAreaIndicatorContainer.visible = false;
+			captureAreaIndicator.visible = false;
 			stageBmd.draw(getStage());
-			captureAreaIndicatorContainer.visible = true;
+			captureAreaIndicator.visible = true;
 			var bmd:BitmapData = new BitmapData(captureArea.width,captureArea.height);
 			bmd.copyPixels(stageBmd,captureArea,new Point());
 			rawImageBytes = bmd.getPixels(bmd.rect);
@@ -233,7 +240,7 @@ package org.pixelami.topshot.tools
 			var jpegQuality:Number = 80;
 			jpeglib.encodeAsync(encodeComplete, rawImageBytes, encodedImageBytes, captureArea.width, captureArea.height, jpegQuality);
 			
-			captureAreaIndicatorContainer.addEventListener(Event.ENTER_FRAME,onEnterFrame);
+			captureAreaIndicator.addEventListener(Event.ENTER_FRAME,onEnterFrame);
 		}
 		
 		protected function onEnterFrame(event:Event):void
@@ -244,18 +251,19 @@ package org.pixelami.topshot.tools
 		protected function encodeComplete(o:Object):void
 		{
 			//trace("Encoding complete:",o);
-			captureAreaIndicatorContainer.removeEventListener(Event.ENTER_FRAME,onEnterFrame);
-			captureAreaIndicatorContainer.showButtons();
-			captureAreaIndicatorContainer.addEventListener(Event.CLOSE,onCaptureIndicatorCloseClick);
-			captureAreaIndicatorContainer.addEventListener("download",onDownloadImageClick);
+			captureAreaIndicator.removeEventListener(Event.ENTER_FRAME,onEnterFrame);
+			captureAreaIndicator.showButtons();
+			captureAreaIndicator.addEventListener(Event.CLOSE,onCaptureIndicatorCloseClick);
+			captureAreaIndicator.addEventListener(DOWNLOAD,onDownloadImageClick);
 			
-			dispatchEvent(new Event('encodeComplete'));
+			dispatchEvent(new Event(ENCODE_COMPLETE));
 			// disable until current contents of captureAreaIndicatorContainer are canceled or saved
 			disable();
 		}
 
 		private function onCaptureIndicatorCloseClick(event:Event):void
 		{
+			
 			removeCaptureAreaContainer();
 			enable();
 		}
@@ -266,10 +274,10 @@ package org.pixelami.topshot.tools
 			var fref:FileReference = new FileReference();
 			var d:Date = new Date();
 			fref.save(encodedImageBytes,"shot-"+d.getTime()+".jpg");
-			fref.addEventListener(Event.COMPLETE,onSaveComplete);
-			fref.addEventListener(Event.CANCEL,onCaptureIndicatorCloseClick);
-			
+			fref.addEventListener(Event.COMPLETE,onSaveComplete,false,0,true);
+			fref.addEventListener(Event.CANCEL,onCaptureIndicatorCloseClick,false,0,true);
 		}
+		
 		private function onSaveComplete(event:Event):void
 		{
 			enable();
